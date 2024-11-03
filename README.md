@@ -96,3 +96,13 @@ Image: thumbnails/mustang_sm.png --> A white sports car is parked on a road with
 You can see with the lower resolution you get fewer details.
 
 
+## Streamlit App
+
+There is a [Streamlit](https://streamlit.io/) app that you can run locally that allows you to upload
+your own images and get captions for them.
+
+```shell
+$ streamlit run streamlit_app.py
+```
+
+![App Screenshot](app_screenshot.png)
