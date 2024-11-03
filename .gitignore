@@ -1,2 +1,3 @@
 image_*.png
 image_*.jpg
+__pycache__/

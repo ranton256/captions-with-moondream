@@ -50,20 +50,26 @@ def get_example_images():
         return image_files
 
 
-def process_image(model, tokenizer, filename):
-    image = Image.open(filename)
+def process_image(model, tokenizer, filename=None, image=None):
+    if image is None:
+        if filename is None:
+            print("Must provide either an image or a filename")
+            return None
+        image = Image.open(filename)
+    else:
+        try:
+            filename = image.filename
+        except AttributeError:
+            filename = "untitled"
+
     enc_image = model.encode_image(image)
     description = model.answer_question(enc_image, "Describe this image.", tokenizer)
     print(f"Image: {filename} --> {description}")
+    return description
 
 
 def main():
-    model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, revision=revision)
-    tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision)
-
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    model.generation_config.pad_token_id = tokenizer.pad_token_id
+    model, tokenizer = load_model()
 
     if len(sys.argv) > 0:
         image_files = sys.argv[1:]
@@ -71,7 +77,16 @@ def main():
         image_files = get_example_images()
 
     for image_filename in image_files:
-        process_image(model, tokenizer, image_filename)
+        process_image(model, tokenizer, filename=image_filename)
+
+
+def load_model():
+    model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, revision=revision)
+    tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    model.generation_config.pad_token_id = tokenizer.pad_token_id
+    return model, tokenizer
 
 
 if __name__ == "__main__":

@@ -5,3 +5,4 @@ filetype
 pillow
 torch
 torchvision
+streamlit
