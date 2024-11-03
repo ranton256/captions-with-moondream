@@ -1,0 +1,7 @@
+transformers
+einops
+requests
+filetype
+pillow
+torch
+torchvision
